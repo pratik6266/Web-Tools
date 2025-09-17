@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  zookeeper:
+    image: bitnami/zookeeper:3.8.3
+    container_name: zookeeper
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: bitnami/kafka:3.5.1
+    container_name: kafka
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      # Two listeners: one for Docker network, one for host
+      - KAFKA_LISTENERS=PLAINTEXT://:9092,EXTERNAL://:9093
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,EXTERNAL://localhost:9093
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    ports:
+      - "9092:9092"   # For other Docker containers
+      - "9093:9093"   # For host machine
+    depends_on:
+      - zookeeper

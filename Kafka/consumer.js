@@ -2,7 +2,7 @@ const { kafka } = require('./client');
 const group = process.argv[2] || 'user-1'; // Default group if not provided
 
 async function init() {
-  const consumer  = kafka.consumer({ groupId: 'user-1' });
+  const consumer  = kafka.consumer({ groupId: group });
   await consumer.connect();
 
   console.log('Connected to Kafka');
